@@ -17,7 +17,7 @@ const clearBtn = document.getElementById("clear-cart-btn");
 const CART_KEY = "cart";
 
 // get cart from sessionStorage
-function getCart(cart) {
+function getCart() {
 	return JSON.parse(sessionStorage.getItem(CART_KEY)) || [];
 }
 
@@ -37,32 +37,36 @@ function renderProducts() {
 
 // Render cart list
 function renderCart() {
-	const cart = getCart();
-	cartList.innerHTML = "";
+  const cart = getCart();
+  cartList.innerHTML = "";
 
-	cart.forEach((item) => {
-		const li = document.createElement("li");
-		li.textContent = `${item.name} - $${item.price}`;
-		cartList.appendChild(li);
-	});
+  cart.forEach((item) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} - $${item.price}`;
+    cartList.appendChild(li);
+  });
 }
 
 // Add item to cart
 function addToCart(productId) {
 	const product = products.find((p) => p.id === Number(productId));
-  if (!product) return;
+	if (!product) return;
 
-  // ALWAYS get latest cart from sessionStorage
-  const cart = getCart();
+	// ALWAYS get latest cart from sessionStorage
+	const cart = getCart();
 
-  // push new item (allow duplicates)
-  cart.push(product);
+	// push new item (allow duplicates)
+	cart.push({
+		id: product.id,
+		name: product.name,
+		price: product.price
+	});
 
-  // save updated cart
-  setCart(cart);
+	// save updated cart
+	setCart(cart);
 
-  // re-render UI
-  renderCart();
+	// re-render UI
+	renderCart();
 
 }
 
