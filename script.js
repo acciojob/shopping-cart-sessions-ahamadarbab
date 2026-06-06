@@ -48,7 +48,7 @@ function renderProducts() {
 
 // Render cart list
 function renderCart() {
-  const cart = getCart();
+  const cart = JSON.parse(sessionStorage.getItem(CART_KEY)) || [];
   cartList.innerHTML = "";
 
   cart.forEach((item) => {
@@ -60,25 +60,21 @@ function renderCart() {
 
 // Add item to cart
 function addToCart(productId) {
-	const product = products.find((p) => p.id === Number(productId));
-	if (!product) return;
+  const product = products.find(p => p.id === Number(productId));
+  if (!product) return;
 
-	// ALWAYS get latest cart from sessionStorage
-	const cart = getCart();
+  // ALWAYS fresh read
+  let cart = JSON.parse(sessionStorage.getItem(CART_KEY)) || [];
 
-	// push new item (allow duplicates)
-	cart.push({
-		id: product.id,
-		name: product.name,
-		price: product.price
-	});
+  cart.push({
+    id: product.id,
+    name: product.name,
+    price: product.price
+  });
 
-	// save updated cart
-	setCart(cart);
+  sessionStorage.setItem(CART_KEY, JSON.stringify(cart));
 
-	// re-render UI
-	renderCart();
-
+  renderCart();
 }
 
 // Remove item from cart
