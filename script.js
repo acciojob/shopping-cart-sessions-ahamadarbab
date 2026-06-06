@@ -83,7 +83,7 @@ function removeFromCart(productId) {
 // Clear cart
 function clearCart() {
 	sessionStorage.removeItem(CART_KEY);
-	renderCart();
+	cartList.innerHTML = "";
 }
 
 // Event delegation for product buttons
