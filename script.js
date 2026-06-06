@@ -30,7 +30,18 @@ function setCart(cart) {
 function renderProducts() {
   products.forEach((product) => {
     const li = document.createElement("li");
-    li.innerHTML = `${product.name} - $${product.price} <button class="add-to-cart-btn" data-id="${product.id}">Add to Cart</button>`;
+
+    const text = document.createElement("span");
+    text.textContent = `${product.name} - $${product.price}`;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Add to Cart";
+    btn.className = "add-to-cart-btn";
+    btn.setAttribute("data-id", product.id);
+
+    li.appendChild(text);
+    li.appendChild(btn);
+
     productList.appendChild(li);
   });
 }
@@ -83,15 +94,15 @@ function removeFromCart(productId) {
 // Clear cart
 function clearCart() {
 	sessionStorage.removeItem(CART_KEY);
-	cartList.innerHTML = "";
+	renderCart();
 }
 
 // Event delegation for product buttons
 productList.addEventListener("click", (e) => {
-	if (e.target.classList.contains("add-to-cart-btn")) {
-		const id = e.target.getAttribute("data-id");
-	    addToCart(id);
-	}
+	const btn = e.target.closest(".add-to-cart-btn");
+	if(!btn) return;
+
+	addToCart(btn.getAttribute("data-id"));
 });
 
 // Event delegation for remove buttons in cart
