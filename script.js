@@ -11,6 +11,20 @@ const products = [
 
 // DOM elements
 const productList = document.getElementById("product-list");
+const cartList = document.getElementById("cart-list");
+const clearBtn = document.getElementById("clear-cart-btn");
+
+const CART_KEY = "cart";
+
+// get cart from sessionStorage
+function getCart(cart) {
+	return JSON.parse(sessionStorage.getItem(CART_KEY)) || [];
+}
+
+// save cart to sessionStorage
+function setCart(cart) {
+	sessionStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
 
 // Render product list
 function renderProducts() {
@@ -22,16 +36,64 @@ function renderProducts() {
 }
 
 // Render cart list
-function renderCart() {}
+function renderCart() {
+	const cart = getCart();
+	cartList.innerHTML = "";
+
+	cart.forEach((item) => {
+		const li = document.createElement("li");
+		li.textContent = `${item.name} - $${item.price}`;
+		cartList.appendChild(li);
+	});
+}
 
 // Add item to cart
-function addToCart(productId) {}
+function addToCart(productId) {
+	const product = products.find((p) => p.id === Number(productId));
+	if (!product) return;
+
+	const cart = getCart();
+	cart.push(product);
+
+	setCart(cart);
+	renderCart();
+}
 
 // Remove item from cart
-function removeFromCart(productId) {}
+function removeFromCart(productId) {
+	let cart = getCart();
+
+	cart = cart.filter((item) => item.id !== Number(productId));
+
+	setCart(cart);
+	renderCart();
+}
 
 // Clear cart
-function clearCart() {}
+function clearCart() {
+	sessionStorage.removeItem(CART_KEY);
+	renderCart();
+}
+
+// Event delegation for product buttons
+productList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("add-to-cart-btn")) {
+    const id = e.target.getAttribute("data-id");
+    addToCart(id);
+  }
+});
+
+// Event delegation for remove buttons in cart
+cartList.addEventListener("click", (e) => {
+  if (e.target.classList.contains("remove-btn")) {
+    const id = e.target.getAttribute("data-id");
+    removeFromCart(id);
+  }
+});
+
+// Clear cart button
+clearBtn.addEventListener("click", clearCart);
+
 
 // Initial render
 renderProducts();
