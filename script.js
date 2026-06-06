@@ -50,13 +50,20 @@ function renderCart() {
 // Add item to cart
 function addToCart(productId) {
 	const product = products.find((p) => p.id === Number(productId));
-	if (!product) return;
+  if (!product) return;
 
-	const cart = getCart();
-	cart.push(product);
+  // ALWAYS get latest cart from sessionStorage
+  const cart = getCart();
 
-	setCart(cart);
-	renderCart();
+  // push new item (allow duplicates)
+  cart.push(product);
+
+  // save updated cart
+  setCart(cart);
+
+  // re-render UI
+  renderCart();
+
 }
 
 // Remove item from cart
@@ -77,18 +84,18 @@ function clearCart() {
 
 // Event delegation for product buttons
 productList.addEventListener("click", (e) => {
-  if (e.target.classList.contains("add-to-cart-btn")) {
-    const id = e.target.getAttribute("data-id");
-    addToCart(id);
-  }
+	if (e.target.classList.contains("add-to-cart-btn")) {
+		const id = e.target.getAttribute("data-id");
+	    addToCart(id);
+	}
 });
 
 // Event delegation for remove buttons in cart
 cartList.addEventListener("click", (e) => {
-  if (e.target.classList.contains("remove-btn")) {
-    const id = e.target.getAttribute("data-id");
-    removeFromCart(id);
-  }
+	if (e.target.classList.contains("remove-btn")) {
+	    const id = e.target.getAttribute("data-id");
+	    removeFromCart(id);
+	}
 });
 
 // Clear cart button
